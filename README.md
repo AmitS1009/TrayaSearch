@@ -5,16 +5,24 @@ uses a Self-RAG pipeline to decide when retrieval is needed, combine semantic
 and keyword search, rerank candidates, verify relevance, and reject answers that
 are not grounded in the product catalog.
 
-## What Changed
+## What This Project Includes
 
-- Replaced ChromaDB with Qdrant dense retrieval plus in-memory BM25 sparse retrieval.
-- Added Reciprocal Rank Fusion (RRF, `k=60`) and cross-encoder reranking.
-- Added Groq `llama-3.3-70b-versatile` generation with grounded product prompts.
-- Added Self-RAG retrieval gating, relevance checks, groundedness checks, and two retries.
-- Added JWT registration/login, protected chat, and PostgreSQL chat history.
-- Added a 25-query RAGAS evaluation set and protected metrics dashboard.
-- Added async Traya scraping and optional 24-hour APScheduler synchronization.
-- Added LangSmith tracing decorators and Render deployment configuration.
+- A Self-RAG product advisor that decides when product retrieval is needed and
+  answers only from catalog-backed context.
+- Hybrid product search using Qdrant dense vectors, BM25 keyword retrieval, RRF
+  fusion, and cross-encoder reranking for stronger product matching.
+- Real Groq LLM integration with `llama-3.3-70b-versatile` for conversational,
+  grounded product recommendations.
+- Built-in answer safety checks: retrieval gating, document relevance scoring,
+  groundedness verification, query rewriting, and low-confidence fallback.
+- JWT-based authentication with registration, login, protected chat, and
+  PostgreSQL-backed chat history.
+- A RAGAS evaluation workflow with a 25-query test set, saved metric scores, and
+  a protected metrics dashboard.
+- Async product scraping support with optional 24-hour APScheduler sync into
+  PostgreSQL and Qdrant.
+- LangSmith tracing hooks, Docker Compose local setup, and Render deployment
+  configuration for production readiness.
 
 ## Architecture
 
