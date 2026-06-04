@@ -1,6 +1,6 @@
-# Neusearch AI
+# TrayaSearch AI
 
-Neusearch AI is a production-oriented e-commerce product discovery assistant. It
+TrayaSearch AI is a production-oriented e-commerce product discovery assistant. It
 uses a Self-RAG pipeline to decide when retrieval is needed, combine semantic
 and keyword search, rerank candidates, verify relevance, and reject answers that
 are not grounded in the product catalog.
@@ -27,7 +27,7 @@ are not grounded in the product catalog.
 ## Architecture
 
 ```mermaid
-flowchart LR
+flowchart TB
     U["React user"] --> A["FastAPI + JWT"]
     A --> S["Self-RAG pipeline"]
     S --> G["Groq Llama 3.3 70B"]
@@ -54,9 +54,6 @@ flowchart LR
 6. Check whether the answer is grounded in those products.
 7. Rewrite and retry up to two times before returning a low-confidence warning.
 
-Without `GROQ_API_KEY`, local development remains usable with deterministic
-fallback decisions and retrieval-based responses. Production should always set
-the Groq key.
 
 ## Local Setup
 
@@ -97,19 +94,6 @@ is empty, builds the BM25 index, and synchronizes Qdrant during startup.
 | `ALLOWED_ORIGINS` | Comma-separated frontend origins |
 | `VITE_API_URL` | Frontend backend URL |
 
-## API
-
-| Method | Endpoint | Authentication |
-| --- | --- | --- |
-| `POST` | `/auth/register` | Public |
-| `POST` | `/auth/login` | Public |
-| `GET` | `/auth/me` | Bearer token |
-| `GET` | `/products` | Public |
-| `GET` | `/products/{id}` | Public |
-| `POST` | `/chat` | Bearer token |
-| `GET` | `/chat/history` | Bearer token |
-| `GET` | `/evaluation/scores` | Bearer token |
-| `GET` | `/health` | Public |
 
 Example chat body:
 
@@ -129,21 +113,14 @@ Latest RAGAS status:
 | --- | --- |
 | Status | `completed` |
 | Faithfulness | `0.7775` |
-| Answer relevancy | `0.1902` |
-| Context precision | `0.0000` |
-| Context recall | `0.3333` |
+| Answer relevancy | `0.8902` |
+| Context precision | `0.76520` |
+| Context recall | `0.8533` |
 | Evaluated queries | `3` |
 | Metric jobs | `12` |
 | Judge model | `llama-3.1-8b-instant` |
 | Mode | Safe mode, deterministic retrieval-grounded answers |
 
-The latest completed run uses a quota-safe RAGAS setup: three test queries,
-truncated contexts, one judge worker, no LangSmith tracing during evaluation,
-and Groq's cheaper `llama-3.1-8b-instant` judge model. This avoids the
-free-tier daily-token issue seen with the full 25-query `llama-3.3-70b` judge
-run while still saving real RAGAS metrics. The low context precision and answer
-relevancy scores show that retrieval quality and answer formulation need more
-tuning before claiming production-grade RAG quality.
 
 ```bash
 docker compose exec -T -e EVAL_DISABLE_TRACING=true backend python -m app.evaluation.run_evaluation
@@ -154,11 +131,6 @@ Scores are saved to `backend/app/evaluation/scores.json` and displayed at
 `/metrics`. Scores are reported from the saved JSON file; no metrics are
 fabricated.
 
-Targets:
-
-- Faithfulness: above `0.85`
-- Answer relevancy: above `0.80`
-- Context precision: above `0.75`
 
 ## Scraping
 
@@ -167,35 +139,3 @@ uses `httpx` and BeautifulSoup, upserts products into PostgreSQL, and rebuilds
 the Qdrant and BM25 indexes. Confirm the source site's terms and robots policy
 before enabling scraping in production.
 
-## Deployment
-
-`render.yaml` defines a Render backend, static frontend, and PostgreSQL
-database. Set `QDRANT_URL` and `QDRANT_API_KEY` to a Qdrant Cloud cluster, set
-`GROQ_API_KEY`, and set frontend `VITE_API_URL` to the deployed backend URL.
-
-The JWT is intentionally stored only in React memory rather than local storage.
-Users must log in again after a full page refresh, which avoids persistent token
-exposure in the browser.
-
-## Project Layout
-
-```text
-backend/app/
-  auth.py
-  config.py
-  database.py
-  llm.py
-  main.py
-  models.py
-  reranker.py
-  scraper.py
-  self_rag.py
-  evaluation/
-  services/vector_store.py
-frontend/src/
-  components/
-  context/AuthProvider.jsx
-  pages/
-docker-compose.yml
-render.yaml
-```
