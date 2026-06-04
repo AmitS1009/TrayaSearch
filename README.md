@@ -113,16 +113,38 @@ Example chat body:
 
 The realistic 25-query test set is in
 `backend/app/evaluation/test_queries.json`. Run evaluation after configuring the
-required evaluator API key and starting Qdrant:
+required evaluator API key and starting Qdrant.
+
+Latest RAGAS status:
+
+| Metric | Latest result |
+| --- | --- |
+| Status | `completed` |
+| Faithfulness | `0.7775` |
+| Answer relevancy | `0.1902` |
+| Context precision | `0.0000` |
+| Context recall | `0.3333` |
+| Evaluated queries | `3` |
+| Metric jobs | `12` |
+| Judge model | `llama-3.1-8b-instant` |
+| Mode | Safe mode, deterministic retrieval-grounded answers |
+
+The latest completed run uses a quota-safe RAGAS setup: three test queries,
+truncated contexts, one judge worker, no LangSmith tracing during evaluation,
+and Groq's cheaper `llama-3.1-8b-instant` judge model. This avoids the
+free-tier daily-token issue seen with the full 25-query `llama-3.3-70b` judge
+run while still saving real RAGAS metrics. The low context precision and answer
+relevancy scores show that retrieval quality and answer formulation need more
+tuning before claiming production-grade RAG quality.
 
 ```bash
-cd backend
-python -m app.evaluation.run_evaluation
+docker compose exec -T -e EVAL_DISABLE_TRACING=true backend python -m app.evaluation.run_evaluation
+docker compose exec -T backend python -m app.evaluation.run_evaluation
 ```
 
 Scores are saved to `backend/app/evaluation/scores.json` and displayed at
-`/metrics`. Scores are deliberately reported as `Not run` until a real
-evaluation completes; no metrics are fabricated.
+`/metrics`. Scores are reported from the saved JSON file; no metrics are
+fabricated.
 
 Targets:
 

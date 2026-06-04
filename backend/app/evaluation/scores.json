@@ -1,10 +1,16 @@
 {
-  "status": "rate_limited",
-  "reason": "Full RAGAS run reached Groq free-tier daily token quota before enough judge jobs completed. Re-run after quota resets or use a higher Groq tier.",
-  "faithfulness": null,
-  "answer_relevancy": null,
-  "context_precision": null,
-  "context_recall": null,
-  "attempted_queries": 25,
-  "attempted_metric_jobs": 100
+  "faithfulness": 0.7774891774891776,
+  "answer_relevancy": 0.19023283926571952,
+  "context_precision": 0.0,
+  "context_recall": 0.3333333333333333,
+  "status": "completed",
+  "metadata": {
+    "query_count": 3,
+    "metric_jobs": 12,
+    "judge_model": "llama-3.1-8b-instant",
+    "safe_mode": true,
+    "top_k": 3,
+    "generated_with_llm": false,
+    "context_char_limit": 600
+  }
 }
