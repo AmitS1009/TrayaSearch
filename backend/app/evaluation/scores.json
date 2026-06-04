@@ -1,0 +1,10 @@
+{
+  "status": "rate_limited",
+  "reason": "Full RAGAS run reached Groq free-tier daily token quota before enough judge jobs completed. Re-run after quota resets or use a higher Groq tier.",
+  "faithfulness": null,
+  "answer_relevancy": null,
+  "context_precision": null,
+  "context_recall": null,
+  "attempted_queries": 25,
+  "attempted_metric_jobs": 100
+}

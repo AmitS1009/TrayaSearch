@@ -1,0 +1,42 @@
+services:
+  - type: web
+    name: neusearch-backend
+    runtime: python
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.11
+      - key: DATABASE_URL
+        fromDatabase:
+          name: neusearch-postgres
+          property: connectionString
+      - key: QDRANT_URL
+        sync: false
+      - key: QDRANT_API_KEY
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: LANGCHAIN_API_KEY
+        sync: false
+      - key: LANGCHAIN_TRACING_V2
+        value: "true"
+      - key: LANGCHAIN_PROJECT
+        value: neusearch-ai
+
+  - type: web
+    name: neusearch-frontend
+    runtime: static
+    buildCommand: cd frontend && npm ci && npm run build
+    staticPublishPath: frontend/dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false
+
+databases:
+  - name: neusearch-postgres
+    databaseName: neusearch
+    user: neusearch
