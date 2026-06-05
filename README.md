@@ -5,6 +5,10 @@ uses a Self-RAG pipeline to decide when retrieval is needed, combine semantic
 and keyword search, rerank candidates, verify relevance, and reject answers that
 are not grounded in the product catalog.
 
+<img width="1470" height="881" alt="Screenshot 2026-06-04 at 2 40 55 PM" src="https://github.com/user-attachments/assets/3671da1b-50e4-4153-becc-f33a9615fbbd" />
+<img width="1470" height="884" alt="Screenshot 2026-06-04 at 2 39 23 PM" src="https://github.com/user-attachments/assets/0490fdad-f7b5-4028-a9c8-77ed0942b484" />
+
+
 ## What This Project Includes
 
 - A Self-RAG product advisor that decides when product retrieval is needed and
